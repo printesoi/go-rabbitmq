@@ -2,8 +2,9 @@ package rabbitmq
 
 import (
 	"fmt"
-	"github.com/streadway/amqp"
 	"time"
+
+	"github.com/streadway/amqp"
 )
 
 // Consumer allows you to create and connect to queues for data consumption.
@@ -171,16 +172,19 @@ func (consumer Consumer) startGoroutines(
 	consumer.chManager.channelMux.RLock()
 	defer consumer.chManager.channelMux.RUnlock()
 
-	_, err := consumer.chManager.channel.QueueDeclare(
-		queue,
-		consumeOptions.QueueDurable,
-		consumeOptions.QueueAutoDelete,
-		consumeOptions.QueueExclusive,
-		consumeOptions.QueueNoWait,
-		tableToAMQPTable(consumeOptions.QueueArgs),
-	)
-	if err != nil {
-		return err
+	var err error
+	if !consumeOptions.SkipQueueDeclare {
+		_, err := consumer.chManager.channel.QueueDeclare(
+			queue,
+			consumeOptions.QueueDurable,
+			consumeOptions.QueueAutoDelete,
+			consumeOptions.QueueExclusive,
+			consumeOptions.QueueNoWait,
+			tableToAMQPTable(consumeOptions.QueueArgs),
+		)
+		if err != nil {
+			return err
+		}
 	}
 
 	if consumeOptions.BindingExchange != nil {

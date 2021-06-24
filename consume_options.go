@@ -8,6 +8,7 @@ func getDefaultConsumeOptions() ConsumeOptions {
 		QueueExclusive:    false,
 		QueueNoWait:       false,
 		QueueArgs:         nil,
+		SkipQueueDeclare:  false,
 		BindingExchange:   nil,
 		BindingNoWait:     false,
 		BindingArgs:       nil,
@@ -30,6 +31,7 @@ type ConsumeOptions struct {
 	QueueExclusive    bool
 	QueueNoWait       bool
 	QueueArgs         Table
+	SkipQueueDeclare  bool
 	BindingExchange   *BindingExchangeOptions
 	BindingNoWait     bool
 	BindingArgs       Table
@@ -108,6 +110,13 @@ func WithConsumeOptionsQuorum(options *ConsumeOptions) {
 		options.QueueArgs = Table{}
 	}
 	options.QueueArgs["x-queue-type"] = "quorum"
+}
+
+// WithConsumeOptionsSkipQueueDeclare will make the consumer skip the
+// QueueDeclare call before consuming. This is only useful for providers that
+// don't give permissions to be created by the user.
+func WithConsumeOptionsSkipQueueDeclare(options *ConsumeOptions) {
+	options.SkipQueueDeclare = true
 }
 
 // WithConsumeOptionsBindingExchangeName returns a function that sets the exchange name the queue will be bound to
