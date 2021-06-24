@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
+	rabbitmq "github.com/printesoi/go-rabbitmq"
 	"github.com/streadway/amqp"
-	rabbitmq "github.com/wagslane/go-rabbitmq"
 )
 
 func main() {
